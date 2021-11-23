@@ -17,6 +17,9 @@ public:
 	 ~Renderer(void);
 	 void RenderScene()				override;
 	 void UpdateScene(float msec)	override;
+	 void ToggleAutomaticCamera();
+
+	 bool automaticCamera;
 
 protected:
 	void BuildNodeLists(SceneNode* from);
@@ -30,7 +33,7 @@ protected:
 
 	float waterRotate;
 	float waterCycle;
-	
+
 	Camera* camera;
 	Frustum frameFrustum;
 	

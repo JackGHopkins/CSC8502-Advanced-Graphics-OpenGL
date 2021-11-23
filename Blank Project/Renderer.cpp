@@ -1,6 +1,8 @@
 #include "Renderer.h"
 
 Renderer::Renderer(Window &parent) : OGLRenderer(parent)	{
+	automaticCamera = false;
+
 	quad = Mesh::GenerateQuad();
 	heightMap = new HeightMap(TEXTUREDIR"noise.png");
 	texture = SOIL_load_OGL_texture(TEXTUREDIR"Barren Reds.JPG", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
@@ -51,7 +53,7 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)	{
 	this->root = new SceneNode();
 
 	Vector3 heightMapSize = heightMap->GetHeightmapSize();
-	camera = new Camera(-45.0f, 0.0f, heightMapSize * Vector3(0.5f, 5.0f, 0.5f));
+	camera = new Camera(0, 0, Vector3(0,0,0));
 	light = new Light(heightMapSize * Vector3(0.5f, 1.5f, 0.5f), Vector4(1, 1, 1, 1), heightMapSize.x * 0.5f);
 	projMatrix = Matrix4::Perspective(1.0f, 15000.0f, (float)width / (float)height, 45.0f);
 	glEnable(GL_DEPTH_TEST);
@@ -76,7 +78,12 @@ Renderer::~Renderer(void) {
 }
 
 void Renderer::UpdateScene(float dt) {
-	camera->UpdateCamera(dt);
+	if (!automaticCamera) {
+		camera->UpdateCamera(dt);
+	}
+	else {
+		camera->UpdateAutomaticCamera(dt);
+	}
 	viewMatrix = camera->BuildViewMatrix();
 	frameFrustum.FromMatrix(projMatrix * viewMatrix);
 	root->Update(dt);
@@ -214,6 +221,10 @@ void Renderer::DrawWater() {
 	UpdateShaderMatrices();
 	SetShaderLight(*light); //No lighting in this shader !
 	quad->Draw();
+}
+
+void Renderer::ToggleAutomaticCamera() {
+	automaticCamera = !automaticCamera;
 }
 
 

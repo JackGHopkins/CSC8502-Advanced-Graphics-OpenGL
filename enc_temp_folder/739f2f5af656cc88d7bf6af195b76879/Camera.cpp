@@ -47,29 +47,24 @@ void Camera::UpdateAutomaticCamera(float dt) {
 		std::cout << "ERROR ERROR ERROR ERROR: No Automatic Camera POSITIONS listed!\n";
 		return;
 	}
-	if (cameraAngles.size() == 0) {
-		std::cout << "ERROR ERROR ERROR ERROR: No Automatic Camera ANGLES listed!\n";
-		return;
-	}
-	/*if (cameraAngles.size() == cameraPositions.size()) {
-		std::cout << "ERROR ERROR ERROR ERROR: Number of Camera Positions and Angles are not Equal!\n";
-		return;
-	}*/
+	//if (cameraAngles.size() == 0) {
+	//	std::cout << "ERROR ERROR ERROR ERROR: No Automatic Camera ANGLES listed!\n";
+	//	return;
+	//}
+	//if (cameraAngles.size() == cameraPositions.size()) {
+	//	std::cout << "ERROR ERROR ERROR ERROR: Number of Camera Positions and Angles are not Equal!\n";
+	//	return;
+	//}
+
 	Vector3 direction = cameraPositions[index] - position;
-	float timeTweenPoints = direction.Length() / speed;
 	direction = direction / direction.Length();
+
 	position += direction * speed;
 
-	int cAGradYaw = (yaw - cameraAngles[index].yaw > 180 || yaw - cameraAngles[index].yaw < 0) ? 1 : -1;
-	int cAGradPitch = (pitch < cameraAngles[index].pitch) ? 1 : -1;
-
-	yaw += cAGradYaw;
-	pitch += cAGradPitch;
-
-	if ((position.x > cameraPositions[index].x - 10 && position.x < cameraPositions[index].x + 10) &&
-		(position.y > cameraPositions[index].y - 10 && position.y < cameraPositions[index].y + 10) &&
-		(position.z > cameraPositions[index].z - 10 && position.z < cameraPositions[index].z + 10)) {
-		if (index < cameraPositions.size() - 1) {
+	if ((position.x > cameraPositions[index].x - 1 && position.x < cameraPositions[index].x + 1) &&
+		(position.y > cameraPositions[index].y - 1 && position.y < cameraPositions[index].y + 1) &&
+		(position.z > cameraPositions[index].z - 1 && position.z < cameraPositions[index].z + 1)) {
+		if (index++ != cameraPositions.size()) {
 			index++;
 		}
 		else {
