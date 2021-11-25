@@ -43,6 +43,13 @@ void Camera::UpdateCamera(float dt) {
 void Camera::UpdateAutomaticCamera(float dt) {
 	speed = 1000.0f * dt;
 
+	if (yaw < 0) {
+		yaw += 360.0f;
+	}
+	if (yaw > 360.0f) {
+		yaw -= 360.0f;
+	}
+
 	if (cameraPositions.size() == 0) {
 		std::cout << "ERROR ERROR ERROR ERROR: No Automatic Camera POSITIONS listed!\n";
 		return;
@@ -60,11 +67,15 @@ void Camera::UpdateAutomaticCamera(float dt) {
 	direction = direction / direction.Length();
 	position += direction * speed;
 
-	int cAGradYaw = (yaw - cameraAngles[index].yaw > 180 || yaw - cameraAngles[index].yaw < 0) ? 1 : -1;
-	int cAGradPitch = (pitch < cameraAngles[index].pitch) ? 1 : -1;
+	if (!(yaw > cameraAngles[index].yaw - 0.1 && yaw < cameraAngles[index].yaw + 0.1)) {
+		int cAGradYaw = (yaw - cameraAngles[index].yaw > 180 || yaw - cameraAngles[index].yaw < 0) ? 0.1 : -0.1;
+		yaw += cAGradYaw;
+	}
 
-	yaw += cAGradYaw;
-	pitch += cAGradPitch;
+	if (!(pitch > cameraAngles[index].pitch - 1 && pitch < cameraAngles[index].pitch + 1)) {
+		int cAGradPitch = (pitch < cameraAngles[index].pitch) ? 1 : -1;
+		pitch += cAGradPitch;
+	}
 
 	if ((position.x > cameraPositions[index].x - 10 && position.x < cameraPositions[index].x + 10) &&
 		(position.y > cameraPositions[index].y - 10 && position.y < cameraPositions[index].y + 10) &&

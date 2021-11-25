@@ -18,6 +18,7 @@ public:
 	 void RenderScene()				override;
 	 void UpdateScene(float msec)	override;
 	 void ToggleAutomaticCamera();
+	 void PrintCoord();
 
 	 bool automaticCamera;
 

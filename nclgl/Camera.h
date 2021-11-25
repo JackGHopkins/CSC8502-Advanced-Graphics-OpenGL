@@ -26,13 +26,15 @@ public:
 		this->yaw = yaw;
 		this->position = position;
 
-		this->cameraPositions.emplace_back(Vector3(0,0,0));
-		this->cameraPositions.emplace_back(Vector3(100,1000,100));
-		this->cameraPositions.emplace_back(Vector3(1000,0,1000));
+		this->cameraPositions.emplace_back(Vector3(0,5000,0));
+		this->cameraPositions.emplace_back(Vector3(10000,5000,0));
+		this->cameraPositions.emplace_back(Vector3(10000,5000,10000));
+		this->cameraPositions.emplace_back(Vector3(0,5000,-10000));
 
-		this->cameraAngles.emplace_back(CameraAngle(0.0f,0.0f));
-		this->cameraAngles.emplace_back(CameraAngle(270.0f, 90.0f));
-		this->cameraAngles.emplace_back(CameraAngle(20.0f, -90.0f));
+		this->cameraAngles.emplace_back(CameraAngle(210.0f,-20.0f));
+		this->cameraAngles.emplace_back(CameraAngle(75.0f, -20.0f));
+		this->cameraAngles.emplace_back(CameraAngle(0.0f, -20.0f));
+		this->cameraAngles.emplace_back(CameraAngle(20.0f, -20.0f));
 		this->index = 0;
 	}
 

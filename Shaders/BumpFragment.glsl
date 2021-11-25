@@ -15,11 +15,14 @@ in Vertex {
 	vec3 tangent;
 	vec3 binormal;
 	vec3 worldPos;
+	float visibility;
 } IN;
 
 out vec4 fragColour;
 
 void main(void) {
+	vec3 skyColour = vec3(0.5,0.5,0.5);
+
 	vec3 incident = normalize(lightPos-IN.worldPos);
 	vec3 viewDir = normalize(cameraPos - IN.worldPos);
 	vec3 halfDir = normalize(incident + viewDir);
@@ -41,4 +44,6 @@ void main(void) {
 	fragColour.rgb += (lightColour.rgb * specFactor )* attenuation *0.33;
 	fragColour.rgb += surface * 0.1f;
 	fragColour.a = diffuse.a;
+
+	fragColour = mix(vec4(skyColour, 1.0), fragColour, IN.visibility);
 }

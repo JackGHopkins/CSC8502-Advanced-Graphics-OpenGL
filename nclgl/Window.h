@@ -54,6 +54,7 @@ public:
 
 	GameTimer*   GetTimer()		{return timer;}
 
+	bool				fullScreen;
 protected:
 	void	CheckMessages(MSG &msg);
 	static LRESULT CALLBACK WindowProc(HWND hWnd,UINT message,WPARAM wParam,LPARAM lParam);
@@ -70,7 +71,6 @@ protected:
 
 	bool				forceQuit;
 	bool				init;
-	bool				fullScreen;
 	bool				lockMouse;
 	bool				showMouse;
 	bool				mouseLeftWindow;

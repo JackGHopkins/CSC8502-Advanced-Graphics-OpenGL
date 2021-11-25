@@ -5,25 +5,25 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)	{
 
 	quad = Mesh::GenerateQuad();
 	heightMap = new HeightMap(TEXTUREDIR"noise.png");
-	texture = SOIL_load_OGL_texture(TEXTUREDIR"Barren Reds.JPG", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-	//normalMap = SOIL_load_OGL_texture(TEXTUREDIR "Barren RedsDOT3.JPG", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	texture = SOIL_load_OGL_texture(TEXTUREDIR"cartoonSand.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	normalMap = SOIL_load_OGL_texture(TEXTUREDIR "sandNormal.jpg", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 
 	waterTex = SOIL_load_OGL_texture(
-		TEXTUREDIR"water.TGA", SOIL_LOAD_AUTO,
+		TEXTUREDIR"cartoonWater.jpg", SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 
 	earthTex = SOIL_load_OGL_texture(
-		TEXTUREDIR"Barren Reds.JPG", SOIL_LOAD_AUTO,
+		TEXTUREDIR"cartoonSand.jpg", SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 
 	earthBump = SOIL_load_OGL_texture(
-		TEXTUREDIR"Barren RedsDOT3.JPG", SOIL_LOAD_AUTO,
+		TEXTUREDIR"sandNormal.jpg", SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 
 	cubeMap = SOIL_load_OGL_cubemap(
-		TEXTUREDIR"rusted_west.jpg", TEXTUREDIR"rusted_east.jpg",
-		TEXTUREDIR"rusted_up.jpg", TEXTUREDIR"rusted_down.jpg",
-		TEXTUREDIR"rusted_south.jpg", TEXTUREDIR"rusted_north.jpg",
+		TEXTUREDIR"skybox_west.jpg", TEXTUREDIR"skybox_east.jpg",
+		TEXTUREDIR"skybox_up.jpg", TEXTUREDIR"skybox_down.jpg",
+		TEXTUREDIR"skybox_south.jpg", TEXTUREDIR"skybox_north.jpg",
 		SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
 
 	if (!earthTex || !earthBump || !cubeMap || !waterTex) {
@@ -39,7 +39,7 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)	{
 	skyboxShader = new Shader("skyboxVertex.glsl", "skyboxFragment.glsl");
 	lightShader = new Shader("PerPixelVertex.glsl", "PerPixelFragment.glsl");
 
-	if (!shader->LoadSuccess() || !texture /*|| !normalMap*/) {
+	if (!shader->LoadSuccess() || !texture || !normalMap) {
 		return;
 	}
 
@@ -53,7 +53,7 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)	{
 	this->root = new SceneNode();
 
 	Vector3 heightMapSize = heightMap->GetHeightmapSize();
-	camera = new Camera(0, 0, Vector3(0,0,0));
+	camera = new Camera(-45.0f, 0.0f, heightMapSize * Vector3(0.5f, 1.0f, 0.5f));
 	light = new Light(heightMapSize * Vector3(0.5f, 1.5f, 0.5f), Vector4(1, 1, 1, 1), heightMapSize.x * 0.5f);
 	projMatrix = Matrix4::Perspective(1.0f, 15000.0f, (float)width / (float)height, 45.0f);
 	glEnable(GL_DEPTH_TEST);
@@ -87,6 +87,9 @@ void Renderer::UpdateScene(float dt) {
 	viewMatrix = camera->BuildViewMatrix();
 	frameFrustum.FromMatrix(projMatrix * viewMatrix);
 	root->Update(dt);
+
+	waterRotate += dt * 0.02f; 
+	waterCycle += dt * 0.01f; 
 }
 
 
@@ -104,6 +107,7 @@ void Renderer::RenderScene() {
 	glBindTexture(GL_TEXTURE_2D, normalMap);
 
 	glUniform3fv(glGetUniformLocation(shader->GetProgram(), "cameraPos"), 1, (float*)& camera->GetPosition());
+	glUniform3fv(glGetUniformLocation(shader->GetProgram(), "skyColour"), 2, (float*)& Vector3(0.5f, 0.5f, 0.5f));
 
 	UpdateShaderMatrices();
 	SetShaderLight(*light);
@@ -208,14 +212,16 @@ void Renderer::DrawWater() {
 
 	Vector3 hSize = heightMap->GetHeightmapSize();
 
+	hSize.y = 150.0f;
+
 	modelMatrix =
 		Matrix4::Translation(hSize * 0.5f) *
-		Matrix4::Scale(hSize * 0.5f) *
+		Matrix4::Scale(hSize * 2.0f) *
 		Matrix4::Rotation(90, Vector3(1, 0, 0));
 
 	textureMatrix =
 		Matrix4::Translation(Vector3(waterCycle, 0.0f, waterCycle)) *
-		Matrix4::Scale(Vector3(10, 10, 10)) *
+		Matrix4::Scale(Vector3(20, 20, 20)) *
 		Matrix4::Rotation(waterRotate, Vector3(0, 0, 1));
 
 	UpdateShaderMatrices();
@@ -225,6 +231,12 @@ void Renderer::DrawWater() {
 
 void Renderer::ToggleAutomaticCamera() {
 	automaticCamera = !automaticCamera;
+}
+
+void Renderer::PrintCoord() {
+	std::cout << "X: " << camera->GetPosition().x << std::endl;
+	std::cout << "Y: " << camera->GetPosition().y << std::endl;
+	std::cout << "Z: " << camera->GetPosition().z << std::endl;
 }
 
 
