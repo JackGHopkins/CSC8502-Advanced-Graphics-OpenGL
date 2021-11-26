@@ -4,9 +4,10 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)	{
 	automaticCamera = false;
 
 	quad = Mesh::GenerateQuad();
-	mesh = Mesh::LoadFromMeshFile("Role_T.msh");
+	mesh = Mesh::LoadFromMeshFile("SM_Env_Tree_01.msh");
+	material = new MeshMaterial("SM_Env_Tree_01.mat");
 	cube = Mesh::LoadFromMeshFile("Cube.msh");
-	material = new MeshMaterial("Role_T.mat");
+
 	heightMap = new HeightMap(TEXTUREDIR"noise.png");
 
 	texture = SOIL_load_OGL_texture(TEXTUREDIR"Barren Reds.JPG", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
@@ -131,7 +132,7 @@ void Renderer::RenderScene() {
 	DrawHeightMap();
 	DrawWater();
 	DrawNodes();
-	DrawCube();
+	//DrawCube();
 }
 
  void Renderer::ClearNodeLists() {
@@ -169,25 +170,13 @@ void Renderer::DrawNodes() {
 
 void Renderer::DrawNodes(SceneNode* n) {
 	if (n->GetMesh()) {
-		//Matrix4 model = n->GetWorldTransform() * Matrix4::Scale(n->GetModelScale());
-		//glUniformMatrix4fv(
-		//glGetUniformLocation(shader->GetProgram(),"modelMatrix"), 1, false, model.values);
-		//
-		//glUniform4fv(glGetUniformLocation(shader->GetProgram(),"nodeColour"), 1, (float*)& n->GetColour());
-		//
-		//texture = n-> GetTexture();
-		//glActiveTexture(GL_TEXTURE0);
-		//glBindTexture(GL_TEXTURE_2D, texture);
-	
-		//glUniform1i(glGetUniformLocation(shader->GetProgram(), "useTexture"), texture);
-
 		BindShader(lightShader);
 		glUniform1i(glGetUniformLocation(lightShader->GetProgram(), "diffuseTex"), 0);
 
 		Vector3 hSize = Vector3(1000, 1000, 1000);
 
 		modelMatrix =
-			Matrix4::Translation(hSize * 0.5f) *
+			Matrix4::Translation(Vector3(8018.31,813.912,6510.11)) *
 			Matrix4::Scale(hSize * 0.5f) *
 			Matrix4::Rotation(90, Vector3(1, 0, 0));
 
@@ -212,7 +201,6 @@ void Renderer::DrawNodes(SceneNode* n) {
 			glBindTexture(GL_TEXTURE_2D, matTextures[i]);
 			mesh->DrawSubMesh(i);
 		}
-		//n->Draw(*this);
 	}
 }
 

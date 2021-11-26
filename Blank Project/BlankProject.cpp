@@ -27,7 +27,7 @@ int main()	{
 			Shader::ReloadAllShaders();
 		}
 		if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_1)) {
-			std::cout << "Camera Auto Toggled.";
+			std::cout << "Camera Auto Toggled." << std::endl;
 			renderer.ToggleAutomaticCamera();
 			if (!renderer.automaticCamera) {
 				w.LockMouseToWindow(true);
