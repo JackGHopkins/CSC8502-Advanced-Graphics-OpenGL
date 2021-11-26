@@ -13,6 +13,8 @@
 #include "../nclgl/SceneNode.h"
 #include "../nclgl/Shader.h"
 
+const int POST_PASSES = 2;
+
 class Renderer : public OGLRenderer	{
 public:
 	Renderer(Window &parent);
@@ -34,6 +36,8 @@ protected:
 	void DrawNodes(SceneNode* n);
 	void DrawSkybox();
 	void DrawWater();
+	void DrawPostProcess();
+
 
 	float waterRotate;
 	float waterCycle;
@@ -44,9 +48,15 @@ protected:
 	GLuint texture;
 	GLuint normalMap;
 	GLuint cubeMap;
-	GLuint waterTex;
+	GLuint bumpTex;
+	GLuint bumpmap;
 	GLuint earthTex;
+	GLuint waterTex;
 	GLuint earthBump;
+	GLuint bufferColourTex[2];
+	GLuint processFBO;
+	GLuint bufferFBO;
+	GLuint bufferDepthTex;
 
 	HeightMap* heightMap;
 
@@ -62,7 +72,9 @@ protected:
 	
 	Shader* shader;
 	Shader* lightShader;
+	Shader* processShader;
 	Shader* reflectShader;
+	Shader* sceneShader;
 	Shader* skyboxShader;
 	Shader* texShader;
 	

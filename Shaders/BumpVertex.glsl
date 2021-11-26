@@ -16,7 +16,7 @@ out Vertex {
 	vec3 tangent;
 	vec3 binormal;
 	vec3 worldPos;
-	float visibility;
+	//float visibility;
 } OUT;
 
 const float fogDensity = 0.007f;
@@ -42,5 +42,5 @@ void main ( void ) {
 	gl_Position = projMatrix * relativeCamPos;
 
 	float distance = length(relativeCamPos.xyz);
-	OUT.visibility = exp(-pow((distance* fogDensity), fogGradient));
+	//OUT.visibility = exp(-pow((distance* fogDensity), fogGradient));
 }

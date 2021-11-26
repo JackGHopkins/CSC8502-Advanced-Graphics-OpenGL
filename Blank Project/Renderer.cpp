@@ -39,6 +39,13 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)	{
 	SetTextureRepeating(earthBump, true);
 	SetTextureRepeating(waterTex, true);
 
+	//Post Processing
+	sceneShader = new Shader("TexturedVertex.glsl",
+		"TexturedFragment.glsl");
+	processShader = new Shader("TexturedVertex.glsl",
+		"processfrag.glsl");
+
+
 	shader = new Shader("bumpvertex.glsl", "bumpfragment.glsl");
 	reflectShader = new Shader("reflectVertex.glsl", "reflectFragment.glsl");
 	skyboxShader = new Shader("skyboxVertex.glsl", "skyboxFragment.glsl");
@@ -91,6 +98,10 @@ Renderer::~Renderer(void) {
 	delete reflectShader;
 	delete skyboxShader;
 	glDeleteTextures(1, &texture);
+	glDeleteTextures(2, bufferColourTex);
+	glDeleteTextures(1, &bufferDepthTex);
+	glDeleteFramebuffers(1, &bufferFBO);
+	glDeleteFramebuffers(1, &processFBO);
 }
 
 void Renderer::UpdateScene(float dt) {
@@ -213,15 +224,15 @@ void Renderer::DrawSkybox() {
 }
 
 void Renderer::DrawHeightMap() {
-	BindShader(lightShader);
+	BindShader(shader);
 	SetShaderLight(*light);
-	glUniform3fv(glGetUniformLocation(lightShader->GetProgram(), "cameraPos"), 1, (float*)& camera->GetPosition());
+	glUniform3fv(glGetUniformLocation(shader->GetProgram(), "cameraPos"), 1, (float*)& camera->GetPosition());
 
-	glUniform1i(glGetUniformLocation(lightShader->GetProgram(), "diffuseTex"), 0);
+	glUniform1i(glGetUniformLocation(shader->GetProgram(), "diffuseTex"), 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, earthTex);
 
-	glUniform1i(glGetUniformLocation(lightShader->GetProgram(), "bumpTex"), 1);
+	glUniform1i(glGetUniformLocation(shader->GetProgram(), "bumpTex"), 1);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, earthBump);
 
@@ -308,5 +319,4 @@ void Renderer::PrintCoordinates() {
 	std::cout << "Pitch: " << camera->GetPitch() << std::endl;
 	std::cout << "Yaw: " << camera->GetYaw() << std::endl << std::endl;
 }
-
 
