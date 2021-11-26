@@ -6,10 +6,10 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)	{
 	quad = Mesh::GenerateQuad();
 	heightMap = new HeightMap(TEXTUREDIR"noise.png");
 	texture = SOIL_load_OGL_texture(TEXTUREDIR"Barren Reds.JPG", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
-	//normalMap = SOIL_load_OGL_texture(TEXTUREDIR "Barren RedsDOT3.JPG", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
+	normalMap = SOIL_load_OGL_texture(TEXTUREDIR "Barren RedsDOT3.JPG", SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 
 	waterTex = SOIL_load_OGL_texture(
-		TEXTUREDIR"water.TGA", SOIL_LOAD_AUTO,
+		TEXTUREDIR"cartoonWater.jpg", SOIL_LOAD_AUTO,
 		SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 
 	earthTex = SOIL_load_OGL_texture(
@@ -21,9 +21,9 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)	{
 		SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS);
 
 	cubeMap = SOIL_load_OGL_cubemap(
-		TEXTUREDIR"rusted_west.jpg", TEXTUREDIR"rusted_east.jpg",
-		TEXTUREDIR"rusted_up.jpg", TEXTUREDIR"rusted_down.jpg",
-		TEXTUREDIR"rusted_south.jpg", TEXTUREDIR"rusted_north.jpg",
+		TEXTUREDIR"skybox_west.jpg", TEXTUREDIR"skybox_east.jpg",
+		TEXTUREDIR"skybox_up.jpg", TEXTUREDIR"skybox_down.jpg",
+		TEXTUREDIR"skybox_south.jpg", TEXTUREDIR"skybox_north.jpg",
 		SOIL_LOAD_RGB, SOIL_CREATE_NEW_ID, 0);
 
 	if (!earthTex || !earthBump || !cubeMap || !waterTex) {
@@ -227,5 +227,12 @@ void Renderer::ToggleAutomaticCamera() {
 	automaticCamera = !automaticCamera;
 }
 
+void Renderer::PrintCoordinates() {
+	std::cout << "X: " << camera->GetPosition().x << std::endl;
+	std::cout << "Y: " << camera->GetPosition().y << std::endl;
+	std::cout << "Z: " << camera->GetPosition().z << std::endl;
+	std::cout << "Pitch: " << camera->GetPitch() << std::endl;
+	std::cout << "Yaw: " << camera->GetYaw() << std::endl << std::endl;
+}
 
 

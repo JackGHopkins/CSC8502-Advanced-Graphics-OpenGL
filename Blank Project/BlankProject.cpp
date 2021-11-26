@@ -20,11 +20,14 @@ int main()	{
 		renderer.UpdateScene(w.GetTimer()->GetTimeDeltaSeconds());
 		renderer.RenderScene();
 		renderer.SwapBuffers();
+		if (Window::GetKeyboard()->KeyDown(KEYBOARD_F1)) {
+			renderer.PrintCoordinates();
+		}
 		if (Window::GetKeyboard()->KeyDown(KEYBOARD_F5)) {
 			Shader::ReloadAllShaders();
 		}
 		if (Window::GetKeyboard()->KeyTriggered(KEYBOARD_1)) {
-			std::cout << "Came1ra Auto Toggled.";
+			std::cout << "Camera Auto Toggled.";
 			renderer.ToggleAutomaticCamera();
 			if (!renderer.automaticCamera) {
 				w.LockMouseToWindow(true);

@@ -23,7 +23,8 @@ Mesh* Mesh::GenerateTriangle()
 	m->textureCoords[1] = Vector2(1.0f, 1.0f);
 	m->textureCoords[2] = Vector2(0.0f, 1.0f);
 		m -> BufferData();
-	 return m;
+	 return m;
+
 }
 bool Mesh::GetVertexIndicesForTri(unsigned int i,
 	unsigned int& a, unsigned int& b, unsigned int& c) const {
