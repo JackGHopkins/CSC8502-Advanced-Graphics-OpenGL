@@ -6,6 +6,8 @@
 #include "../nclgl/Frustum.h"
 #include "../nclgl/HeightMap.h"
 #include "../nclgl/Light.h"
+#include "../nclgl/MeshAnimation.h"
+#include "../nclgl/MeshMaterial.h"
 #include "../nclgl/Mesh.h"
 #include "../nclgl/OGLRenderer.h"
 #include "../nclgl/SceneNode.h"
@@ -26,6 +28,7 @@ protected:
 	void BuildNodeLists(SceneNode* from);
 	void SortNodeLists();
 	void ClearNodeLists();
+	void DrawCube();
 	void DrawHeightMap();
 	void DrawNodes();
 	void DrawNodes(SceneNode* n);
@@ -49,17 +52,25 @@ protected:
 
 	Light* light;
 
-	Mesh*triangle;
-	Mesh* quad;
 	Mesh* cube;
+	Mesh* quad;
+	Mesh* mesh;
+
+	MeshAnimation* anim;
+	MeshMaterial* material;
+	vector<GLuint> matTextures;
 	
 	Shader* shader;
 	Shader* lightShader;
 	Shader* reflectShader;
 	Shader* skyboxShader;
+	Shader* texShader;
 	
 	SceneNode* root;
 
 	std::vector<SceneNode*> transparentNodeList;
 	std::vector<SceneNode*> nodeList;
+
+	int currentFrame;
+	float frameTime;
 };

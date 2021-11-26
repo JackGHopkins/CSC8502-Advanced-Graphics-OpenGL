@@ -4,13 +4,13 @@
 #include <vector>
 class CameraAngle {
 public:
-	CameraAngle(float yaw, float pitch) {
-		this->yaw = yaw;
+	CameraAngle(float pitch, float yaw) {
 		this->pitch = pitch;
+		this->yaw = yaw;
 	}
 
-	float yaw;
 	float pitch;
+	float yaw;
 };
 
 class Camera {
@@ -26,13 +26,15 @@ public:
 		this->yaw = yaw;
 		this->position = position;
 
-		this->cameraPositions.emplace_back(Vector3(0,0,0));
-		this->cameraPositions.emplace_back(Vector3(100,1000,100));
-		this->cameraPositions.emplace_back(Vector3(1000,0,1000));
+		this->cameraPositions.emplace_back(Vector3(1825,180,2300));
+		this->cameraPositions.emplace_back(Vector3(2500, 750, 9500));
+		this->cameraPositions.emplace_back(Vector3(9900, 1600, 11500));
+		this->cameraPositions.emplace_back(Vector3(13000, 2880, 5500));
 
-		this->cameraAngles.emplace_back(CameraAngle(0.0f,0.0f));
-		this->cameraAngles.emplace_back(CameraAngle(270.0f, 90.0f));
-		this->cameraAngles.emplace_back(CameraAngle(20.0f, -90.0f));
+		this->cameraAngles.emplace_back(CameraAngle(7,220));
+		this->cameraAngles.emplace_back(CameraAngle(0, 275));
+		this->cameraAngles.emplace_back(CameraAngle(-17, -17));
+		this->cameraAngles.emplace_back(CameraAngle(-20, 117));
 		this->index = 0;
 	}
 
@@ -52,12 +54,12 @@ public:
 	float GetPitch() const { return pitch; }
 	void SetPitch(float p) { pitch = p; }
 
-protected:
 	std::vector<Vector3> cameraPositions;
 	std::vector<CameraAngle> cameraAngles;
+	int index;
+protected:
 	float yaw;
 	float pitch;
 	float speed;
 	Vector3 position;
-	int index;
 };

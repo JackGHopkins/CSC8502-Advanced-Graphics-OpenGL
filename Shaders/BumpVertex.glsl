@@ -16,7 +16,11 @@ out Vertex {
 	vec3 tangent;
 	vec3 binormal;
 	vec3 worldPos;
+	float visibility;
 } OUT;
+
+const float fogDensity = 0.007f;
+const float fogGradient = 1.5f;
 
 void main ( void ) {
 	OUT.colour = colour;
@@ -32,8 +36,11 @@ void main ( void ) {
 	OUT.binormal = cross (wTangent , wNormal ) * tangent.w;
 
 	vec4 worldPos = (modelMatrix * vec4 (position ,1));
-
+	vec4 relativeCamPos = viewMatrix * worldPos;
 	OUT.worldPos = worldPos.xyz;
 
-	gl_Position = (projMatrix * viewMatrix) * worldPos;
+	gl_Position = projMatrix * relativeCamPos;
+
+	float distance = length(relativeCamPos.xyz);
+	OUT.visibility = exp(-pow((distance* fogDensity), fogGradient));
 }

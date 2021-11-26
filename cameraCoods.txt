@@ -1,0 +1,34 @@
+X: 1825.5
+Y: 183.189
+Z: 2263.19
+Pitch: 6.85994
+Yaw: 220.42
+
+X: 2498.57
+Y: 749.771
+Z: 9542.02
+Pitch: 0.209933
+Yaw: 274.46
+
+X: 9872.22
+Y: 1599.69
+Z: 11522.7
+Pitch: -17.5701
+Yaw: 17.3602
+
+X: 12947.5
+Y: 2883.02
+Z: 5501.46
+Pitch: -19.81
+Yaw: 117.11
+
+		this->cameraPositions.emplace_back(Vector3(1825,180,2300));
+		this->cameraPositions.emplace_back(Vector3(2500, 750, 9500));
+		this->cameraPositions.emplace_back(Vector3(9900, 1600, 11500));
+		this->cameraPositions.emplace_back(Vector3(13000, 2880, 5500));
+
+		this->cameraAngles.emplace_back(CameraAngle(7,220));
+		this->cameraAngles.emplace_back(CameraAngle(0, 275));
+		this->cameraAngles.emplace_back(CameraAngle(-17, -17));
+		this->cameraAngles.emplace_back(CameraAngle(-20, 117));
+

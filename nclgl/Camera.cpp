@@ -62,13 +62,13 @@ void Camera::UpdateAutomaticCamera(float dt) {
 
 	float cameraAngleSpeed = 0.1;
 
-	if (!(yaw > cameraAngles[index].yaw - 0.1 && yaw < cameraAngles[index].yaw + 0.1)) {
-		int cAGradYaw = (yaw - cameraAngles[index].yaw > 180 || yaw - cameraAngles[index].yaw < 0) ? cameraAngleSpeed : -cameraAngleSpeed;
+	if (!(yaw > cameraAngles[index].yaw - 1 && yaw < cameraAngles[index].yaw + 1)) {
+		float cAGradYaw = (yaw - cameraAngles[index].yaw > 180 || yaw - cameraAngles[index].yaw < 0) ? cameraAngleSpeed : -cameraAngleSpeed;
 		yaw += cAGradYaw;
 	}
 
 	if (!(pitch > cameraAngles[index].pitch - 1 && pitch < cameraAngles[index].pitch + 1)) {
-		int cAGradPitch = (pitch < cameraAngles[index].pitch) ? cameraAngleSpeed : -cameraAngleSpeed;
+		float cAGradPitch = (pitch < cameraAngles[index].pitch) ? cameraAngleSpeed : -cameraAngleSpeed;
 		pitch += cAGradPitch;
 	}
 
