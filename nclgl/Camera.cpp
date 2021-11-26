@@ -60,7 +60,7 @@ void Camera::UpdateAutomaticCamera(float dt) {
 	direction = direction / direction.Length();
 	position += direction * speed;
 
-	float cameraAngleSpeed = 0.1;
+	float cameraAngleSpeed = 0.2;
 
 	if (!(yaw > cameraAngles[index].yaw - 1 && yaw < cameraAngles[index].yaw + 1)) {
 		float cAGradYaw = (yaw - cameraAngles[index].yaw > 180 || yaw - cameraAngles[index].yaw < 0) ? cameraAngleSpeed : -cameraAngleSpeed;

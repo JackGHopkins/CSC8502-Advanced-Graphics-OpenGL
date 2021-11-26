@@ -32,9 +32,9 @@ public:
 		this->cameraPositions.emplace_back(Vector3(13000, 2880, 5500));
 
 		this->cameraAngles.emplace_back(CameraAngle(7,220));
-		this->cameraAngles.emplace_back(CameraAngle(0, 275));
-		this->cameraAngles.emplace_back(CameraAngle(-17, -17));
-		this->cameraAngles.emplace_back(CameraAngle(-20, 117));
+		this->cameraAngles.emplace_back(CameraAngle(20, 275));
+		this->cameraAngles.emplace_back(CameraAngle(-70, -17));
+		this->cameraAngles.emplace_back(CameraAngle(70, 117));
 		this->index = 0;
 	}
 

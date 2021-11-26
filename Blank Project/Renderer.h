@@ -80,6 +80,8 @@ protected:
 	
 	SceneNode* root;
 
+	std::vector<Mesh*> meshes;
+	std::vector<MeshMaterial*> materials;
 	std::vector<SceneNode*> transparentNodeList;
 	std::vector<SceneNode*> nodeList;
 

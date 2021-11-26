@@ -32,3 +32,4 @@ Yaw: 117.11
 		this->cameraAngles.emplace_back(CameraAngle(-17, -17));
 		this->cameraAngles.emplace_back(CameraAngle(-20, 117));
 
+Vector3(8018.31,813.912,6510.11)

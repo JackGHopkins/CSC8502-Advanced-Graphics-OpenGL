@@ -1,11 +1,19 @@
 #include "Renderer.h"
 
 Renderer::Renderer(Window &parent) : OGLRenderer(parent)	{
-	automaticCamera = false;
+	automaticCamera = true;
 
 	quad = Mesh::GenerateQuad();
-	mesh = Mesh::LoadFromMeshFile("SM_Env_Tree_01.msh");
-	material = new MeshMaterial("SM_Env_Tree_01.mat");
+
+	meshes.emplace_back(Mesh::LoadFromMeshFile("SM_Env_Cliff_01.msh"));
+	meshes.emplace_back(Mesh::LoadFromMeshFile("SM_Env_Grass_01.msh"));
+	meshes.emplace_back(Mesh::LoadFromMeshFile("SM_Env_Tree_01.msh"));
+	meshes.emplace_back(Mesh::LoadFromMeshFile("SM_Prop_Rowboat_01.msh"));
+	
+	materials.emplace_back(new MeshMaterial("SM_Env_Cliff_01.mat"));
+	materials.emplace_back(new MeshMaterial("SM_Env_Grass_01.mat"));
+	materials.emplace_back(new MeshMaterial("SM_Env_Tree_01.mat"));
+	materials.emplace_back(new MeshMaterial("SM_Prop_Rowboat_01.mat"));
 	cube = Mesh::LoadFromMeshFile("Cube.msh");
 
 	heightMap = new HeightMap(TEXTUREDIR"noise.png");
@@ -45,7 +53,6 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)	{
 	processShader = new Shader("TexturedVertex.glsl",
 		"processfrag.glsl");
 
-
 	shader = new Shader("bumpvertex.glsl", "bumpfragment.glsl");
 	reflectShader = new Shader("reflectVertex.glsl", "reflectFragment.glsl");
 	skyboxShader = new Shader("skyboxVertex.glsl", "skyboxFragment.glsl");
@@ -63,20 +70,45 @@ Renderer::Renderer(Window &parent) : OGLRenderer(parent)	{
 	SetTextureRepeating(texture, true);
 	SetTextureRepeating(normalMap, true);
 
-	for (int i = 0; i < mesh->GetSubMeshCount(); ++i) {
-		const MeshMaterialEntry* matEntry = material->GetMaterialForLayer(i);
-		const string* filename = nullptr;
-		matEntry->GetEntry("Diffuse", &filename);
-		string path = TEXTUREDIR + *filename;
-		GLuint texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y);
-		matTextures.emplace_back(texID);
+	for (int j = 0; j < meshes.size() -1; j++) {
+		for (int i = 0; i < meshes[j]->GetSubMeshCount(); ++i) {
+			const MeshMaterialEntry* matEntry = materials[i]->GetMaterialForLayer(i);
+			const string* filename = nullptr;
+			matEntry->GetEntry("Diffuse", &filename);
+			string path = TEXTUREDIR + *filename;
+			GLuint texID = SOIL_load_OGL_texture(path.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y);
+			matTextures.emplace_back(texID);
+		}
 	}
 
+	Vector3 size = Vector3(1000, 1000, 1000);
+
 	this->root = new SceneNode();
-	root->AddChild(new SceneNode(mesh));
+
+	SceneNode* cliff = new SceneNode(meshes[2]);
+	cliff->SetTransform(Matrix4::Translation(Vector3(8018.31, 813.912, 6510.11)) *
+						Matrix4::Scale(size * 0.5f) *
+						Matrix4::Rotation(90, Vector3(1, 0, 0)));
+	root->AddChild(cliff);
+
+	SceneNode* tree = new SceneNode(meshes[2]);
+	tree->SetTransform(Matrix4::Translation(Vector3(9000, 800, 8500)) *
+		Matrix4::Scale(size) *
+		Matrix4::Rotation(90, Vector3(1, 0, 0)));
+	root->AddChild(tree);
+
+	SceneNode* boat = new SceneNode(meshes[2]);
+	boat->SetTransform(Matrix4::Translation(Vector3(10000.31, 813.912, 7000.11)) *
+		Matrix4::Scale(size * 0.5f) *
+		Matrix4::Rotation(90, Vector3(1, 0, 0)));
+	root->AddChild(boat);
 
 	Vector3 heightMapSize = heightMap->GetHeightmapSize();
 	camera = new Camera(0, 0, Vector3(0,0,0));
+	if (automaticCamera) {
+		camera->SetPitch(camera->cameraAngles[camera->index].pitch);
+		camera->SetYaw(camera->cameraAngles[camera->index].yaw);
+	}
 	light = new Light(heightMapSize * Vector3(0.5f, 1.5f, 0.5f), Vector4(1, 1, 1, 1), heightMapSize.x * 0.5f);
 	projMatrix = Matrix4::Perspective(1.0f, 15000.0f, (float)width / (float)height, 45.0f);
 	glEnable(GL_DEPTH_TEST);
@@ -97,6 +129,11 @@ Renderer::~Renderer(void) {
 	delete lightShader;
 	delete reflectShader;
 	delete skyboxShader;
+
+	for (auto i : materials) {
+		delete i;
+	}
+
 	glDeleteTextures(1, &texture);
 	glDeleteTextures(2, bufferColourTex);
 	glDeleteTextures(1, &bufferDepthTex);
@@ -186,10 +223,7 @@ void Renderer::DrawNodes(SceneNode* n) {
 
 		Vector3 hSize = Vector3(1000, 1000, 1000);
 
-		modelMatrix =
-			Matrix4::Translation(Vector3(8018.31,813.912,6510.11)) *
-			Matrix4::Scale(hSize * 0.5f) *
-			Matrix4::Rotation(90, Vector3(1, 0, 0));
+		modelMatrix = n->GetTransform();
 
 		textureMatrix =
 			Matrix4::Translation(Vector3(waterCycle, 0.0f, waterCycle)) *
@@ -207,10 +241,10 @@ void Renderer::DrawNodes(SceneNode* n) {
 		int j = glGetUniformLocation(shader->GetProgram(), "joints");
 		glUniformMatrix4fv(j, frameMatrices.size(), false, (float*)frameMatrices.data());
 
-		for (int i = 0; i < mesh->GetSubMeshCount(); i++) {
+		for (int i = 0; i < n->GetMesh()->GetSubMeshCount(); i++) {
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, matTextures[i]);
-			mesh->DrawSubMesh(i);
+			n->GetMesh()->DrawSubMesh(i);
 		}
 	}
 }
